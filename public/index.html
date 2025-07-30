@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrooge Bank - Testing Interface</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            transition: transform 0.2s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #2980b9;
+            margin-top: 0;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        input[type="text"], input[type="email"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #2980b9, #21618c);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .response {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            border: 1px solid #34495e;
+        }
+        
+        .success {
+            border-left-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .error {
+            border-left-color: #e74c3c;
+            background: #fadbd8;
+        }
+        
+        .status-display {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .status-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 2px solid #ecf0f1;
+        }
+        
+        .status-card h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .status-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .current-user {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #27ae60;
+        }
+        
+        .api-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Scrooge Bank Testing Interface</h1>
+        
+        <div class="api-info">
+            <strong>📋 Instructions:</strong> Follow the steps in order. Each step builds on the previous one. Make sure your Rails server is running on <code>http://localhost:3000</code>
+        </div>
+        
+        <div class="current-user" id="currentUser" style="display: none;">
+            <strong>👤 Current User:</strong> <span id="userInfo"></span>
+        </div>
+        
+        <!-- Step 1: Bank Status -->
+        <div class="section">
+            <h2><span class="step-number">1</span>Bank Status</h2>
+            <p>Check the bank's current financial status</p>
+            <button onclick="getBankStatus()">Get Bank Status</button>
+            <div id="bankStatusDisplay" class="status-display"></div>
+            <div id="bankStatusResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 2: Create User -->
+        <div class="section">
+            <h2><span class="step-number">2</span>Create User</h2>
+            <div class="form-group">
+                <label for="userName">Name:</label>
+                <input type="text" id="userName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="userEmail">Email:</label>
+                <input type="email" id="userEmail" placeholder="john@example.com">
+            </div>
+            <button onclick="createUser()">Create User</button>
+            <div id="createUserResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 3: Create Account -->
+        <div class="section">
+            <h2><span class="step-number">3</span>Create Account</h2>
+            <p>Create a checking account for the user</p>
+            <button onclick="createAccount()" id="createAccountBtn" disabled>Create Account (Select User First)</button>
+            <div id="createAccountResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 4: Deposit Money -->
+        <div class="section">
+            <h2><span class="step-number">4</span>Make Deposit</h2>
+            <div class="form-group">
+                <label for="depositAmount">Amount ($):</label>
+                <input type="number" id="depositAmount" placeholder="1000" min="0.01" step="0.01">
+            </div>
+            <button onclick="makeDeposit()" id="depositBtn" disabled>Make Deposit</button>
+            <div id="depositResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 5: Apply for Loan -->
+        <div class="section">
+            <h2><span class="step-number">5</span>Apply for Loan</h2>
+            <div class="form-group">
+                <label for="loanAmount">Loan Amount ($):</label>
+                <input type="number" id="loanAmount" placeholder="5000" min="1" step="0.01">
+            </div>
+            <button onclick="applyForLoan()" id="loanBtn" disabled>Apply for Loan</button>
+            <div id="loanResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 6: Make Withdrawal -->
+        <div class="section">
+            <h2><span class="step-number">6</span>Make Withdrawal</h2>
+            <div class="form-group">
+                <label for="withdrawAmount">Amount ($):</label>
+                <input type="number" id="withdrawAmount" placeholder="500" min="0.01" step="0.01">
+            </div>
+            <button onclick="makeWithdrawal()" id="withdrawBtn" disabled>Make Withdrawal</button>
+            <div id="withdrawResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 7: Make Loan Payment -->
+        <div class="section">
+            <h2><span class="step-number">7</span>Make Loan Payment</h2>
+            <div class="form-group">
+                <label for="paymentAmount">Payment Amount ($):</label>
+                <input type="number" id="paymentAmount" placeholder="1000" min="0.01" step="0.01">
+            </div>
+            <button onclick="makeLoanPayment()" id="paymentBtn" disabled>Make Payment</button>
+            <div id="paymentResponse" class="response" style="display: none;"></div>
+        </div>
+        
+        <!-- Step 8: View Account Details -->
+        <div class="section">
+            <h2><span class="step-number">8</span>Account Details</h2>
+            <button onclick="getAccountDetails()" id="accountDetailsBtn" disabled>Get Account Details</button>
+            <div id="accountDetailsResponse" class="response" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserId = null;
+        let currentAccountId = null;
+        let currentLoanId = null;
+        const API_BASE = 'http://localhost:3000';
+        
+        // Utility function to make API calls
+        async function apiCall(method, endpoint, data = null, headers = {}) {
+            const config = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...headers
+                }
+            };
+            
+            if (data) {
+                config.body = JSON.stringify(data);
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, config);
+                const result = await response.json();
+                return { success: response.ok, data: result, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Display response in a formatted way
+        function displayResponse(elementId, response, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(response, null, 2);
+            
+            const section = element.closest('.section');
+            section.className = isSuccess ? 'section success' : 'section error';
+        }
+        
+        // Update user info display
+        function updateUserInfo(user) {
+            currentUserId = user.id;
+            document.getElementById('currentUser').style.display = 'block';
+            document.getElementById('userInfo').textContent = `${user.name} (ID: ${user.id})`;
+            
+            // Enable account creation
+            const createAccountBtn = document.getElementById('createAccountBtn');
+            createAccountBtn.disabled = false;
+            createAccountBtn.textContent = 'Create Account';
+        }
+        
+        // Enable buttons after account creation
+        function enableAccountButtons() {
+            document.getElementById('depositBtn').disabled = false;
+            document.getElementById('loanBtn').disabled = false;
+            document.getElementById('withdrawBtn').disabled = false;
+            document.getElementById('accountDetailsBtn').disabled = false;
+        }
+        
+        // Display bank status in cards
+        function displayBankStatus(status) {
+            const container = document.getElementById('bankStatusDisplay');
+            container.innerHTML = `
+                <div class="status-card">
+                    <h3>💰 Total Funds</h3>
+                    <div class="status-value">$${parseFloat(status.total_funds).toLocaleString()}</div>
+                </div>
+                <div class="status-card">
+                    <h3>💳 Customer Deposits</h3>
+                    <div class="status-value">$${parseFloat(status.customer_deposits).toLocaleString()}</div>
+                </div>
+                <div class="status-card">
+                    <h3>🏦 Outstanding Loans</h3>
+                    <div class="status-value">$${parseFloat(status.outstanding_loans).toLocaleString()}</div>
+                </div>
+                <div class="status-card">
+                    <h3>👥 Total Customers</h3>
+                    <div class="status-value">${status.total_customers}</div>
+                </div>
+            `;
+        }
+        
+        // API Functions
+        async function getBankStatus() {
+            const response = await apiCall('GET', '/bank/status');
+            if (response.success) {
+                displayBankStatus(response.data);
+                displayResponse('bankStatusResponse', response.data);
+            } else {
+                displayResponse('bankStatusResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function createUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            
+            if (!name || !email) {
+                alert('Please fill in both name and email');
+                return;
+            }
+            
+            const response = await apiCall('POST', '/users', {
+                user: { name, email }
+            });
+            
+            if (response.success) {
+                updateUserInfo(response.data);
+                displayResponse('createUserResponse', response.data);
+            } else {
+                displayResponse('createUserResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function createAccount() {
+            if (!currentUserId) {
+                alert('Please create a user first');
+                return;
+            }
+            
+            const response = await apiCall('POST', '/accounts', null, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                currentAccountId = response.data.id;
+                enableAccountButtons();
+                displayResponse('createAccountResponse', response.data);
+            } else {
+                displayResponse('createAccountResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function makeDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            const response = await apiCall('POST', `/accounts/${currentAccountId}/deposit`, {
+                amount: amount
+            }, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                displayResponse('depositResponse', response.data);
+                // Refresh bank status
+                getBankStatus();
+            } else {
+                displayResponse('depositResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function applyForLoan() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid loan amount');
+                return;
+            }
+            
+            const response = await apiCall('POST', '/loans', {
+                loan: { amount: amount }
+            }, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                if (response.data.loan) {
+                    currentLoanId = response.data.loan.id;
+                    document.getElementById('paymentBtn').disabled = false;
+                }
+                displayResponse('loanResponse', response.data);
+                // Refresh bank status
+                getBankStatus();
+            } else {
+                displayResponse('loanResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function makeWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            const response = await apiCall('POST', `/accounts/${currentAccountId}/withdraw`, {
+                amount: amount
+            }, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                displayResponse('withdrawResponse', response.data);
+                // Refresh bank status
+                getBankStatus();
+            } else {
+                displayResponse('withdrawResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function makeLoanPayment() {
+            if (!currentLoanId) {
+                alert('No active loan found. Apply for a loan first.');
+                return;
+            }
+            
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid payment amount');
+                return;
+            }
+            
+            const response = await apiCall('POST', `/loans/${currentLoanId}/payment`, {
+                amount: amount
+            }, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                displayResponse('paymentResponse', response.data);
+                // Refresh bank status
+                getBankStatus();
+            } else {
+                displayResponse('paymentResponse', response.error || response.data, false);
+            }
+        }
+        
+        async function getAccountDetails() {
+            const response = await apiCall('GET', '/accounts', null, {
+                'User-ID': currentUserId.toString()
+            });
+            
+            if (response.success) {
+                displayResponse('accountDetailsResponse', response.data);
+            } else {
+                displayResponse('accountDetailsResponse', response.error || response.data, false);
+            }
+        }
+        
+        // Initialize by getting bank status
+        document.addEventListener('DOMContentLoaded', function() {
+            getBankStatus();
+        });
+    </script>
+</body>
+</html>
