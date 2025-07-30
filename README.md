@@ -29,7 +29,7 @@ Ensure you have the following installed:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone [repository-url]
+git clone https://github.com/Mowlavie/scrooge.git
 cd bank_app
 ```
 
